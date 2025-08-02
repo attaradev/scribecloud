@@ -1,0 +1,69 @@
+name: 🚀 Deploy ScribeCloud
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'infrastructure/**'
+      - 'lambda_function.py'
+
+jobs:
+  deploy:
+    name: 🌐 Deploy Infrastructure
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: infrastructure
+
+    permissions:
+      id-token: write
+      contents: read
+
+    env:
+      ENVIRONMENT: dev
+      AWS_REGION: us-east-1
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      AWS_ROLE_NAME: ${{ secrets.AWS_ROLE_NAME }}
+
+    steps:
+      - name: 📦 Checkout Code
+        uses: actions/checkout@v3
+
+      - name: 🔧 Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.6.0
+
+      - name: 🔐 Authenticate with AWS via OIDC
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.AWS_ROLE_NAME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: 🧱 Terraform Init
+        run: terraform init -backend-config=backend.hcl -backend-config="key=${ENVIRONMENT}/terraform.tfstate"
+
+      - name: 🧹 Terraform Format Check
+        run: terraform fmt -check -recursive
+
+      - name: 🔍 Terraform Validate
+        run: terraform validate
+
+      - name: 📋 Terraform Plan
+        run: terraform plan -out=tfplan
+
+      - name: 🗂 Upload Terraform Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan-${{ env.ENVIRONMENT }}
+          path: infrastructure/tfplan
+
+      - name: 🚀 Terraform Apply
+        run: terraform apply -auto-approve tfplan
+
+      - name: ✅ Notify
+        run: |
+          echo ""
+          echo "🎉 Deployment Complete!"
+          echo "✅ ScribeCloud deployed to '${ENVIRONMENT}' in region '${AWS_REGION}'"
