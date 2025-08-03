@@ -43,7 +43,7 @@ User (CLI) --> Cognito Hosted UI Login
 
 * Located under `cli/`
 
-  * `main.py` – CLI entrypoint
+  * `__main__.py` – CLI entrypoint
   * `auth.py` – Handles Cognito Hosted UI login and token storage
   * `translate.py` – Sends authenticated translation requests
 * Login flow opens browser to Hosted UI, captures token, and caches it securely
