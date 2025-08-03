@@ -1,7 +1,0 @@
-app_client_id = "58p7ipe8d3lga20976m4cgfnht"
-cognito_hosted_ui_url = "https://scribecloud-auth.auth.us-east-1.amazoncognito.com"
-lambda_function_name = "scribecloud-dev-translate"
-requests_bucket_name = "scribecloud-requests-dev"
-responses_bucket_name = "scribecloud-responses-dev"
-scribecloud_api_url = "https://uttgyjyyy7.execute-api.us-east-1.amazonaws.com"
-user_pool_id = "us-east-1_XehI5Hla5"
