@@ -6,10 +6,15 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from threading import Thread
 from urllib.parse import urlparse, parse_qs
 
+from dotenv import load_dotenv
+load_dotenv()
+
 TOKEN_PATH = os.path.expanduser("~/.scribecloud/token.json")
-CLIENT_ID = "YOUR_CLIENT_ID"
-COGNITO_DOMAIN = "YOUR_DOMAIN.auth.YOUR_REGION.amazoncognito.com"
-REDIRECT_PORT = 53120
+
+# Read from environment
+CLIENT_ID = os.getenv("SCRIBE_CLIENT_ID")
+COGNITO_DOMAIN = os.getenv("SCRIBE_COGNITO_DOMAIN")
+REDIRECT_PORT = int(os.getenv("SCRIBE_REDIRECT_PORT", "53120"))
 REDIRECT_URI = f"http://localhost:{REDIRECT_PORT}/callback"
 
 def save_token(token_data):
@@ -32,13 +37,16 @@ class CallbackHandler(BaseHTTPRequestHandler):
             CallbackHandler.auth_code = query["code"][0]
             self.send_response(200)
             self.end_headers()
-            self.wfile.write(f"✅ Login successful. You may close this window.")
+            self.wfile.write(b"Login successful. You may close this window.")
         else:
             self.send_response(400)
             self.end_headers()
-            self.wfile.write(f"❌ Login failed.")
+            self.wfile.write(b"Login failed.")
 
 def configure():
+    if not CLIENT_ID or not COGNITO_DOMAIN:
+        raise ValueError("Missing environment variables: SCRIBE_CLIENT_ID or SCRIBE_COGNITO_DOMAIN")
+
     print("🔐 Starting login flow...")
 
     def run_server():

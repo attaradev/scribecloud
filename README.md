@@ -2,11 +2,7 @@
 
 **Seamless multilingual translation in the cloud.**
 
----
-
 ScribeCloud is a production-ready, serverless language translation platform built on AWS. It allows you to translate text between multiple languages using **Amazon Translate**, with automation powered by **Lambda**, **API Gateway (HTTP v2)**, and **S3**, all provisioned using **Terraform**. It includes a CLI client that handles user login via Cognito Hosted UI and translates via token-authenticated API calls.
-
----
 
 ## ✨ Features
 
@@ -17,8 +13,6 @@ ScribeCloud is a production-ready, serverless language translation platform buil
 * Translate and receive results directly from CLI.
 * Infrastructure-as-Code with Terraform.
 * Serverless, scalable, and low-maintenance.
-
----
 
 ## 🚀 Architecture Overview
 
@@ -34,8 +28,6 @@ User (CLI) --> Cognito Hosted UI Login
              |
      AWS Translate Service
 ```
-
----
 
 ## 🔧 Components
 
@@ -56,8 +48,6 @@ User (CLI) --> Cognito Hosted UI Login
   * `translate.py` – Sends authenticated translation requests
 * Login flow opens browser to Hosted UI, captures token, and caches it securely
 
----
-
 ## 📝 Prerequisites
 
 * AWS CLI configured (`aws configure`)
@@ -66,8 +56,6 @@ User (CLI) --> Cognito Hosted UI Login
 * Valid Cognito User (via Hosted UI or Admin Invite)
 * Web browser for CLI login
 * No manual configuration of URL or tokens required
-
----
 
 ## ⚙️ Deployment
 
@@ -84,17 +72,15 @@ terraform apply -var-file="terraform.tfvars"
 # Outputs will include:
 # - API URL
 # - Cognito Hosted UI domain
-# - S3 bucket names
+# - Congnito Client ID
 ```
-
----
 
 ## 🧪 CLI Usage
 
 ### Step 1: Log in (once)
 
 ```bash
-python3 cli/main.py configure
+python -m cli configure
 ```
 
 * Opens your browser to the Cognito Hosted UI
@@ -103,16 +89,15 @@ python3 cli/main.py configure
 ### Step 2: Translate text
 
 ```bash
-python3 cli/main.py translate --source en --target fr --text "Hello, world!"
+python -m cli translate --source en --target fr --text "Hello, world"
 ```
 
 ### Output
 
 ```bash
-✅ Translation: Bonjour, le monde!
+✅ Translated text: 
+Bonjour, le monde
 ```
-
----
 
 ## 🔒 Security
 
@@ -120,9 +105,6 @@ python3 cli/main.py translate --source en --target fr --text "Hello, world!"
 * **JWT token validation** in API Gateway using Cognito User Pool authorizer
 * **S3** buckets encrypted with AWS KMS and private access only
 * **IAM roles** scoped with least privilege for Lambda
-* **No API keys** are required – JWT is used for access
-
----
 
 ## 📊 Monitoring
 
@@ -130,8 +112,6 @@ python3 cli/main.py translate --source en --target fr --text "Hello, world!"
 
   * Lambda function
   * API Gateway access and errors
-
----
 
 ## ♻️ Cleanup
 
@@ -141,13 +121,9 @@ To destroy all resources:
 terraform destroy
 ```
 
----
-
 ## 🙌 Contributing
 
 Pull requests are welcome! Feel free to open issues or submit enhancements.
-
----
 
 ## 🚀 Built With
 
@@ -158,3 +134,5 @@ Pull requests are welcome! Feel free to open issues or submit enhancements.
 * [Amazon Cognito](https://aws.amazon.com/cognito/)
 * [Terraform](https://www.terraform.io/)
 * [Python](https://www.python.org/)
+
+By: [**Mike Attara**](https://attara.dev)
